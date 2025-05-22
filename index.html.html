@@ -1,0 +1,130 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>目標心拍数計算機</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+      max-width: 480px;
+      margin: auto;
+      background-color: #f9f9f9;
+      color: #333;
+    }
+    h2 {
+      text-align: center;
+      color: #2c3e50;
+    }
+    label {
+      margin-top: 10px;
+      display: block;
+      font-weight: bold;
+    }
+    input {
+      padding: 10px;
+      font-size: 18px;
+      width: 100%;
+      margin-bottom: 15px;
+      box-sizing: border-box;
+    }
+    .button-group {
+      margin-bottom: 20px;
+    }
+    .button-group button {
+      padding: 10px;
+      font-size: 15px;
+      margin: 5px 5px 10px 0;
+      background-color: #95a5a6;
+      color: white;
+      border: none;
+      border-radius: 5px;
+    }
+    .button-group button:hover {
+      background-color: #7f8c8d;
+    }
+    button#calcBtn {
+      padding: 12px;
+      font-size: 18px;
+      width: 100%;
+      background-color: #3498db;
+      color: white;
+      border: none;
+      border-radius: 5px;
+    }
+    button#calcBtn:hover {
+      background-color: #2980b9;
+    }
+    .result {
+      margin-top: 20px;
+      padding: 15px;
+      background-color: #ecf0f1;
+      border-radius: 5px;
+      font-size: 18px;
+    }
+  </style>
+</head>
+<body>
+  <h2>目標心拍数 計算</h2>
+  <label>年齢</label>
+  <input type="number" id="age" placeholder="例: 35">
+
+  <label>安静時心拍数 (bpm)</label>
+  <input type="number" id="rest" placeholder="例: 60">
+
+  <label>運動強度 (%)</label>
+  <input type="number" id="intensity" placeholder="例: 50">
+
+  <div class="button-group">
+    <strong>▶ 運動強度ボタン:</strong><br>
+    <button onclick="setIntensity(40)">軽い (40%)</button>
+    <button onclick="setIntensity(50)">中程度 (50%)</button>
+    <button onclick="setIntensity(60)">ややきつい (60%)</button>
+    <button onclick="setIntensity(80)">きつい (80%)</button>
+  </div>
+
+  <div class="button-group">
+    <strong>▶ 活動内容から選ぶ:</strong><br>
+    <button onclick="setIntensity(35)">座っている・家事程度 (35%)</button>
+    <button onclick="setIntensity(40)">室内でゆっくり歩く (40%)</button>
+    <button onclick="setIntensity(50)">買い物など屋外歩行 (50%)</button>
+    <button onclick="setIntensity(60)">軽くジョギング (60%)</button>
+    <button onclick="setIntensity(75)">息が上がるような運動 (75%)</button>
+    <button onclick="setIntensity(90)">本気の運動・全力走 (90%)</button>
+  </div>
+
+  <button id="calcBtn" onclick="calculate()">計算</button>
+
+  <div class="result" id="output"></div>
+
+  <script>
+    function setIntensity(value) {
+      document.getElementById("intensity").value = value;
+    }
+
+    function calculate() {
+      const age = parseFloat(document.getElementById("age").value);
+      const rest = parseFloat(document.getElementById("rest").value);
+      const intensityPercent = parseFloat(document.getElementById("intensity").value);
+
+      if (isNaN(age) || isNaN(rest) || isNaN(intensityPercent)) {
+        document.getElementById("output").innerText = "すべての項目を入力してください。";
+        return;
+      }
+
+      const HRmax1 = 220 - age;
+      const HRmax2 = 204 - 0.69 * age;
+      const intensity = intensityPercent / 100;
+
+      const targetHR1 = (HRmax1 - rest) * intensity + rest;
+      const targetHR2 = (HRmax2 - rest) * intensity + rest;
+
+      document.getElementById("output").innerHTML =
+        `<strong>【220-年齢方式】</strong><br>HRmax: ${HRmax1.toFixed(1)} bpm<br>目標心拍数: ${targetHR1.toFixed(1)} bpm<br><br>` +
+        `<strong>【204-0.69×年齢方式】</strong><br>HRmax: ${HRmax2.toFixed(1)} bpm<br>目標心拍数: ${targetHR2.toFixed(1)} bpm`;
+    }
+  </script>
+</body>
+</html>
